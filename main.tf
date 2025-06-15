@@ -24,12 +24,36 @@ resource "aws_subnet" "just_test_subnet" {
     }
 }
 
-resource "aws_instance" "just_test_instance" {
-    ami           = "ami-05f9478b4deb8d173" 
-    subnet_id     = aws_subnet.just_test_subnet.id
+
+resource "aws_instance" "example" {
+    ami           = "ami-05f9478b4deb8d173"
     instance_type = "t2.micro"
-    
+    subnet_id     = aws_subnet.just_test_subnet.id
+    vpc_security_group_ids = [aws_security_group.open_all.id]
+
+    user_data = <<-EOF
+                #!/bin/bash
+                echo "Hello, World" > index.xhtml
+                nohup busybox httpd -f -p 8080 &
+                EOF
+
+    user_data_replace_on_change = true
+
     tags = {
-        Name = "just_test_instance"
+    Name = "test_instance"
     }
+}
+
+resource "aws_security_group" "open_all" {
+    name        = "open_all"
+    description = "Allow all inbound traffic"
+    vpc_id = aws_vpc.just_test.id
+    ingress {
+        from_port   = 8080
+        to_port     = 8080
+        protocol    = "TCP"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+  
 }
