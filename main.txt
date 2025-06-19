@@ -1,0 +1,12 @@
+digraph G {
+  rankdir = "RL";
+  node [shape = rect, fontname = "sans-serif"];
+  "aws_instance.example" [label="aws_instance.example"];
+  "aws_security_group.open_all" [label="aws_security_group.open_all"];
+  "aws_subnet.just_test_subnet" [label="aws_subnet.just_test_subnet"];
+  "aws_vpc.just_test" [label="aws_vpc.just_test"];
+  "aws_instance.example" -> "aws_security_group.open_all";
+  "aws_instance.example" -> "aws_subnet.just_test_subnet";
+  "aws_security_group.open_all" -> "aws_vpc.just_test";
+  "aws_subnet.just_test_subnet" -> "aws_vpc.just_test";
+}
